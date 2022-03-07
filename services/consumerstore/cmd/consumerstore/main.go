@@ -1,18 +1,18 @@
 package main
 
 import (
-	"net"
-	"log"
 	"google.golang.org/grpc"
+	"log"
+	"net"
 
-	"github.com/makkalot/eskit/services/consumerstore/provider"
-	"github.com/makkalot/eskit/generated/grpc/go/consumerstore"
-	"github.com/grpc-ecosystem/go-grpc-prometheus"
-	"net/http"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"google.golang.org/grpc/reflection"
 	"github.com/go-ozzo/ozzo-validation"
+	"github.com/grpc-ecosystem/go-grpc-prometheus"
+	"github.com/makkalot/eskit-example-microservice/services/consumerstore/provider"
+	"github.com/makkalot/eskit/generated/grpc/go/consumerstore"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/viper"
+	"google.golang.org/grpc/reflection"
+	"net/http"
 )
 
 type ConsumerStoreConfig struct {

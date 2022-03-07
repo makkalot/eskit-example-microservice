@@ -1,7 +1,8 @@
 package main
 
 import (
-	"github.com/makkalot/eskit/services/lib/eventstore"
+	"github.com/makkalot/eskit-example-microservice/services/eventstore/provider"
+	"github.com/makkalot/eskit/lib/eventstore"
 	"google.golang.org/grpc"
 	"log"
 
@@ -10,7 +11,6 @@ import (
 	"github.com/go-ozzo/ozzo-validation"
 	"github.com/grpc-ecosystem/go-grpc-prometheus"
 	store "github.com/makkalot/eskit/generated/grpc/go/eventstore"
-	provider2 "github.com/makkalot/eskit/services/eventstore/provider"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc/reflection"
@@ -97,7 +97,7 @@ func main() {
 		}
 	}
 
-	eventStoreProvider, err := provider2.NewEventStoreApiProvider(estore)
+	eventStoreProvider, err := provider.NewEventStoreApiProvider(estore)
 	if err != nil {
 		log.Fatalf("consumerapi provider failed initializing : %v", err)
 	}

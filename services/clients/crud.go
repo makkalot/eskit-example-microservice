@@ -7,7 +7,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/makkalot/eskit/generated/grpc/go/common"
 	"github.com/makkalot/eskit/generated/grpc/go/crudstore"
-	common3 "github.com/makkalot/eskit/services/lib/common"
+	common3 "github.com/makkalot/eskit/lib/common"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

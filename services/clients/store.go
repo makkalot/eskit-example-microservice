@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	store "github.com/makkalot/eskit/generated/grpc/go/eventstore"
-	common2 "github.com/makkalot/eskit/services/lib/common"
+	common2 "github.com/makkalot/eskit/lib/common"
 	"google.golang.org/grpc"
 )
 

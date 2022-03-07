@@ -3,7 +3,7 @@ package store
 import (
 	"context"
 	"github.com/golang/protobuf/proto"
-	common3 "github.com/makkalot/eskit/services/lib/common"
+	common3 "github.com/makkalot/eskit/lib/common"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/satori/go.uuid"
@@ -15,7 +15,7 @@ import (
 	"github.com/makkalot/eskit/generated/grpc/go/common"
 	store "github.com/makkalot/eskit/generated/grpc/go/crudstore"
 	"github.com/makkalot/eskit/generated/grpc/go/users"
-	"github.com/makkalot/eskit/services/clients"
+	"github.com/makkalot/eskit-example-microservice/services/clients"
 	"github.com/makkalot/eskit/tests/integration/util"
 	"google.golang.org/grpc/codes"
 )

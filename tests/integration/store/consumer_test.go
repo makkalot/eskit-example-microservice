@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc"
 	"context"
 	"github.com/makkalot/eskit/generated/grpc/go/common"
-	"github.com/makkalot/eskit/services/clients"
+	"github.com/makkalot/eskit-example-microservice/services/clients"
 	"time"
 	"github.com/makkalot/eskit/tests/integration/util"
 	"google.golang.org/grpc/codes"

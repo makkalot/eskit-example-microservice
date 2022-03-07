@@ -6,7 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/makkalot/eskit/generated/grpc/go/consumerstore"
-	common2 "github.com/makkalot/eskit/services/lib/common"
+	common2 "github.com/makkalot/eskit/lib/common"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"google.golang.org/grpc/codes"

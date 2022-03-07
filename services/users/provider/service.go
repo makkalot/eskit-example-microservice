@@ -4,9 +4,9 @@ import (
 	"context"
 	"github.com/makkalot/eskit/generated/grpc/go/common"
 	"github.com/makkalot/eskit/generated/grpc/go/users"
-	eskitcommon "github.com/makkalot/eskit/services/lib/common"
+	eskitcommon "github.com/makkalot/eskit/lib/common"
 
-	"github.com/makkalot/eskit/services/clients"
+	"github.com/makkalot/eskit-example-microservice/services/clients"
 
 	"fmt"
 	"github.com/makkalot/eskit/generated/grpc/go/crudstore"

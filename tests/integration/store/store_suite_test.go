@@ -6,7 +6,7 @@ import (
 
 	"testing"
 	"os"
-	"github.com/makkalot/eskit/services/clients"
+	"github.com/makkalot/eskit-example-microservice/services/clients"
 	"golang.org/x/net/context"
 	"fmt"
 )

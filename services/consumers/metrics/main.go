@@ -5,8 +5,8 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"context"
-	"github.com/makkalot/eskit/services/clients"
-	metrics "github.com/makkalot/eskit/services/consumers/metrics/provider"
+	"github.com/makkalot/eskit-example-microservice/services/clients"
+	metrics "github.com/makkalot/eskit-example-microservice/services/consumers/metrics/provider"
 )
 
 type ConsumerConfig struct {

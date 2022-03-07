@@ -3,7 +3,7 @@ package clients
 import (
 	"testing"
 	"context"
-	"github.com/makkalot/eskit/services/clients/mocks"
+	"github.com/makkalot/eskit-example-microservice/services/clients/mocks"
 	"github.com/makkalot/eskit/generated/grpc/go/crudstore"
 	"github.com/makkalot/eskit/generated/grpc/go/common"
 	"github.com/satori/go.uuid"

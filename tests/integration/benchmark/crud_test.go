@@ -1,16 +1,16 @@
 package benchmark
 
 import (
-	"testing"
-	"fmt"
-	"os"
-	"github.com/makkalot/eskit/services/clients"
 	"context"
+	"fmt"
+	"github.com/davecgh/go-spew/spew"
+	"github.com/makkalot/eskit-example-microservice/services/clients"
 	"github.com/makkalot/eskit/generated/grpc/go/common"
 	"github.com/makkalot/eskit/generated/grpc/go/users"
 	"github.com/satori/go.uuid"
 	"log"
-	"github.com/davecgh/go-spew/spew"
+	"os"
+	"testing"
 )
 
 func BenchmarkCrudCreate(b *testing.B) {
