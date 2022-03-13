@@ -6,8 +6,8 @@ services:
       context: .
       dockerfile: docker/Dockerfile.golang
     volumes:
-      - ".:/go/src/github.com/makkalot/eskit"
-    working_dir: "/go/src/github.com/makkalot/eskit"
+      - ".:/go/src/github.com/makkalot/eskit-example-microservice"
+    working_dir: "/go/src/github.com/makkalot/eskit-example-microservice"
     command: "make build-go"
 
   db:
@@ -18,20 +18,6 @@ services:
       - POSTGRES_DB=eventsourcing
     ports:
       - "5432"
-
-  users:
-    build:
-      dockerfile: "./services/users/Dockerfile"
-      context: "."
-    ports:
-      - "9090"
-    environment:
-      - CRUDSTORE_ENDPOINT=crudstore:9090
-
-    links:
-      - store
-      - crudstore
-      - consumerapi
 
   store:
     build:
@@ -58,25 +44,12 @@ services:
     - DB_URI=host=db port=5432 user=postgres dbname=eventsourcing password=t00r sslmode=disable
 
 
-  consumerapi:
-    build:
-      dockerfile: "./services/consumerstore/Dockerfile"
-      context: "."
-    ports:
-      - "9090"
-      - "8888"
-    links:
-      - db
-    environment:
-      - DB_URI=host=db port=5432 user=postgres dbname=eventsourcing sslmode=disable password=t00r
-
   metrics:
     build:
       dockerfile: "./services/consumers/metrics/Dockerfile"
       context: "."
     environment:
       - CONSUMER_NAME=30892afc-012a-4b4b-9958-e69e5a6279d0
-      - CONSUMERSTORE_ENDPOINT=consumerapi:9090
       - EVENT_STORE_ENDPOINT=store:9090
       - CRUDSTORE_ENDPOINT=crudstore:9090
     ports:
@@ -92,20 +65,16 @@ services:
       context: .
       dockerfile: docker/Dockerfile.golang
     volumes:
-      - ".:/go/src/github.com/makkalot/eskit"
-    working_dir: "/go/src/github.com/makkalot/eskit"
+      - ".:/go/src/github.com/makkalot/eskit-example-microservice"
+    working_dir: "/go/src/github.com/makkalot/eskit-example-microservice"
     command: "make test-go"
     environment:
-      - USERS_ENDPOINT=users:9090
       - EVENTSTORE_ENDPOINT=store:9090
-      - CONSUMERSTORE_ENDPOINT=consumerapi:9090
       - CRUDSTORE_ENDPOINT=crudstore:9090
     links:
       - db
-      - users
       - store
       - crudstore
-      - consumerapi
 
 
 #  pytest:

@@ -1,11 +1,13 @@
 FROM golang:1.17-alpine
 
-ENV KUBE_LATEST_VERSION="v1.11.4"
-ENV HELM_VERSION v2.11.0
+ENV KUBE_LATEST_VERSION="v1.23.3"
+ENV HELM_VERSION v3.8.1
 ENV HELM_FILENAME helm-${HELM_VERSION}-linux-amd64.tar.gz
-ENV HELM_URL https://storage.googleapis.com/kubernetes-helm/${HELM_FILENAME}
+ENV HELM_URL https://get.helm.sh/${HELM_FILENAME}
+ENV HELM_RELEASE_FILENAME helm-release_0.3.3_linux_amd64.tar.gz
+ENV HELM_RELEASE_URL https://github.com/sstarcher/helm-release/releases/download/0.3.3/${HELM_RELEASE_FILENAME}
 
-RUN apk update &&  apk add make && apk add bash && apk add --no-cache openssl ca-certificates curl git wget
+RUN apk update &&  apk add make && apk add bash && apk add --no-cache openssl ca-certificates curl git wget tar
 
 RUN curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_LATEST_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && \
     chmod +x "/usr/local/bin/kubectl"
@@ -15,18 +17,15 @@ RUN curl -o /tmp/$HELM_FILENAME ${HELM_URL} \
   && mv /tmp/linux-amd64/helm /bin/helm \
   && rm -rf /tmp/*
 
-RUN mkdir -p /tmp \
-    && helm init --client-only \
-    && helm repo update
+RUN helm version
 
-RUN mkdir -p cd /go/src/github.com/sstarcher \
-    && cd /go/src/github.com/sstarcher \
-    && git clone --single-branch -b feature/printversion https://github.com/makkalot/helm-release.git \
-    && cd helm-release \
-    && go build -o helm-release . \
-    && cp helm-release /bin/helm-release
+RUN curl -L ${HELM_RELEASE_URL} -o /tmp/${HELM_RELEASE_FILENAME}  \
+   && pwd \
+   && ls /tmp \
+   && tar -zxvf /tmp/${HELM_RELEASE_FILENAME} -C /tmp \
+   && mv /tmp/helm-release /bin/helm-release \
+   && rm -rf /tmp/*
 
-# RUN mkdir -p /root/.helm/cache/plugins
-#    && helm plugin install https://github.com/sstarcher/helm-release --debug
+RUN helm-release -h
 
 ENV PATH="/usr/local/bin:${PATH}"

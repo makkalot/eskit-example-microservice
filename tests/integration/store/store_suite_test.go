@@ -1,14 +1,14 @@
 package store
 
 import (
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"testing"
-	"os"
+	"fmt"
 	"github.com/makkalot/eskit-example-microservice/services/clients"
 	"golang.org/x/net/context"
-	"fmt"
+	"os"
+	"testing"
 )
 
 func TestUsers(t *testing.T) {
@@ -19,7 +19,6 @@ func TestUsers(t *testing.T) {
 var (
 	storeEndpoint     string
 	crudStoreEndpoint string
-	consumerEndpoint  string
 )
 
 var _ = BeforeSuite(func() {
@@ -27,11 +26,6 @@ var _ = BeforeSuite(func() {
 	storeEndpoint = os.Getenv("EVENTSTORE_ENDPOINT")
 	if storeEndpoint == "" {
 		Fail("EVENTSTORE_ENDPOINT is required")
-	}
-
-	consumerEndpoint = os.Getenv("CONSUMERSTORE_ENDPOINT")
-	if consumerEndpoint == "" {
-		Fail("CONSUMERSTORE_ENDPOINT is required")
 	}
 
 	crudStoreEndpoint = os.Getenv("CRUDSTORE_ENDPOINT")
