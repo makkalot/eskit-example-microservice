@@ -1,13 +1,13 @@
-[![Build Status](https://travis-ci.com/makkalot/eskit.svg?branch=master)](https://travis-ci.com/makkalot/eskit)
+## ESKIT (Event Sourcing Kit) Microservice Example 
 
-## ESKIT (Event Sourcing Kit)
+It consists of 3 service : 
 
-Eskit is a collection of microservices built on top of Event Sourcing Idea. It can be useful
-for people who want to try out event sourcing. As Greg Young mentions in his talks if you write an event sourcing framework probably 
-you're doing something wrong. ESKIT is not an event sourcing framework, it's bunch of contracts (GRPC) with example implementation. 
+- EventStore
+- CrudStore 
+- Metrics Consumer
 
 
-#### What is ESKIT:
+#### What is ESKIT Microservices:
 
 - Event Sourcing Service (Append, Get operations) with Application Log (from Vaughn Vernon's book)
 - CRUD Service : Uses ES service with predefined event types and does the replay for the user.
@@ -18,7 +18,7 @@ you're doing something wrong. ESKIT is not an event sourcing framework, it's bun
 - Supports both GRPC and REST (grpc-gw). 
 
 
-#### What ESKIT is not
+#### What ESKIT Microservices is not
 
 - It's not an Event Sourcing Framework
 - It's not production ready
@@ -27,11 +27,10 @@ you're doing something wrong. ESKIT is not an event sourcing framework, it's bun
 
 ### Architecture Overview
 
-The kit itself consists of 3 microservices and 1 consumer
+The example itself consists of 2 microservices and 1 consumer
 
 - Event Store
 - Crud Store
-- Consumer Store
 - Metrics Consumer
 
 ## Event Store Service
@@ -41,8 +40,7 @@ Event Store Service is an append only service where users can append predefined 
 Every time a new `Append` request is sent the event is written to event store and application log at the same time in the 
 same transaction. This is a trade off the service accepts in order to keep things simple instead of trying to implement
 distributed transactions and etc. Consumers can poll/stream (`LogsPoll`) on that Application Log and process all the events flowing through
-the system. The consumers are responsible for storing the offset of their their progress. ESKIT has a reference implementation of 
-consumer client where it sores its progress on `Consumer Store`.
+the system. The consumers are responsible for storing the offset of their their progress. 
 
 
 ## Crud Store Service
@@ -59,16 +57,10 @@ Crud Store works with Json Payloads for CRUD operations. ESKIT also includes a G
 level and does all the JSON conversion for the user.
 
 
-## Consumer Store Service
-
-Consumer Store Service is simple service that helps consumers keep the progress when they read the Application Log.
-Its useful if consumer is crashed so can continue from where it left off.
-
-
 ## Metrics Consumer
 
 Metrics Consumer is an example implementation of how to write consumers to process the Application Log.
-Currently it reads all of the events flowing and saves the metrics to Prometheus. Project all has grafana dashboards
+Currently, it reads all the events flowing and saves the metrics to Prometheus. Project has grafana dashboards
 which can display some interesting facts about the events flowing in the systems.
 
 General Microservice Architecture looks like :
@@ -88,42 +80,4 @@ General Microservice Architecture looks like :
 
 ##### Deploy to Docker Compose Locally  :
 - `make deploy`
-
-##### Deploy to Minikube Locally (requires already running cluster):
-- `make deploy-minikube`
-
-##### Deploy to DO (requires already running cluster):
-- `make deploy-do`
-
-
-### How to contribute ?
-
-- Create a fork
-- Clone your own fork : `git clone git@gitlab.com:<you-user-name>/eskit.git`
-- cd `eskit`
-- Add upstream : `git remote add upstream git@github.com/makkalot/eskit.git`
-- Fetch The latest changes from the upstream : `git fetch upstream`
-- Merge them to your master : `git rebase upstream/master`
-- Create the branch you want to work on : `git checkout -b <branch-name>`
-- When ready with your changes push them to your branch : `git push origin -u <branch-name>`
-- Before open a Merge Request : rebase against the upstream master branch (if someone did some change)
-    - `git checkout master`
-    - `git fetch upstream`
-    - `git rebase upstream/master`
-    - `git checkout <branch-name>`
-    - `git rebase -i master`
-- Push latest changes to your branch (after the rebase):
-    - `git push origin -f <branch-name>` (Note that we apply -f because of the rebase in prev step, careful !)
-- Create a MR.
-
-For more information about rebasing :
-    - https://www.atlassian.com/git/tutorials/rewriting-history
-    - https://www.atlassian.com/git/tutorials/merging-vs-rebasing
-
-Maintainer :
-- Denis Kyorov   : makkalot at gmail dot com
-
-Contributors:
-
-- Korhan Yazgan  : korhanyazgan at gmail dot com
 

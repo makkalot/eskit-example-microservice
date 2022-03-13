@@ -3,10 +3,62 @@ package clients
 import (
 	"context"
 	"fmt"
+	"github.com/makkalot/eskit/generated/grpc/go/common"
 	store "github.com/makkalot/eskit/generated/grpc/go/eventstore"
 	common2 "github.com/makkalot/eskit/lib/common"
+	"github.com/makkalot/eskit/lib/eventstore"
 	"google.golang.org/grpc"
+	"strconv"
 )
+
+// estoreGrpc implements eventstore.Store via grpc
+type estoreGRPC struct {
+	ctx        context.Context
+	grpcClient store.EventstoreServiceClient
+}
+
+func (e estoreGRPC) Append(event *store.Event) error {
+	_, err := e.grpcClient.Append(e.ctx, &store.AppendEventRequest{Event: event})
+	return err
+}
+
+func (e estoreGRPC) Get(originator *common.Originator, fromVersion bool) ([]*store.Event, error) {
+	resp, err := e.grpcClient.GetEvents(e.ctx, &store.GetEventsRequest{
+		Originator: originator,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.GetEvents(), nil
+}
+
+func (e estoreGRPC) Logs(fromID uint64, size uint32, pipelineID string) ([]*store.AppLogEntry, error) {
+	resp, err := e.grpcClient.Logs(e.ctx, &store.AppLogRequest{
+		FromId:     strconv.FormatUint(fromID, 10),
+		Size:       size,
+		PipelineId: pipelineID,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Results, nil
+}
+
+// NewStoreClient creates a new instance of eventstore.Store
+func NewStoreClient(ctx context.Context, storeEndpoint string) (eventstore.Store, error) {
+	client, err := NewStoreClientWithWait(ctx, storeEndpoint)
+	if err != nil {
+		return nil, err
+	}
+
+	return &estoreGRPC{
+		ctx:        ctx,
+		grpcClient: client,
+	}, nil
+}
 
 // Creates a new EventstoreServiceClient but first waits for health endpoint to become ready
 func NewStoreClientWithWait(ctx context.Context, storeEndpoint string) (store.EventstoreServiceClient, error) {
