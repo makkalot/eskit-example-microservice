@@ -19,7 +19,7 @@ HELM_IMAGE_NAME=$(REPOSITORY_NAME)/eskit-helm:latest
 KUBECONFIG_DIR=/tmp/kube
 KUBECONFIG_PATH=/tmp/kube/config
 
-COMPOSE_FILE=docker-compose-unit.yml
+COMPOSE_FILE=docker-compose.yml
 
 ifndef CI
 	KUBECONFIG_DIR=/tmp/kube
@@ -48,30 +48,22 @@ GRPC_CONTRACTS =
 GRPC_CONTRACTS += common
 GRPC_CONTRACTS += eventstore
 GRPC_CONTRACTS += crudstore
-GRPC_CONTRACTS += consumerstore
-GRPC_CONTRACTS += users
 GRPC_TARGETS = $(addprefix generated/grpc/go/, $(GRPC_CONTRACTS))
 
 GRPC_PYTHON_CONTRACTS =
 GRPC_PYTHON_CONTRACTS += common
 GRPC_PYTHON_CONTRACTS += eventstore
 GRPC_PYTHON_CONTRACTS += crudstore
-GRPC_PYTHON_CONTRACTS += consumerstore
-GRPC_PYTHON_CONTRACTS += users
 GRPC_PYTHON_TARGETS = $(addprefix pyservices/generated/, $(GRPC_PYTHON_CONTRACTS))
 
 DEPLOY_TARGETS =
 DEPLOY_TARGETS += eventstore
 DEPLOY_TARGETS += consumers/metrics
 DEPLOY_TARGETS += crudstore
-DEPLOY_TARGETS += consumerstore
-DEPLOY_TARGETS += users
 
 K8S_SERVICES =
 K8S_SERVICES += eventstore
 K8S_SERVICES += crudstore
-K8S_SERVICES += consumerstore
-K8S_SERVICES += users
 
 
 GO_BUILD_SERVICES =
@@ -79,10 +71,6 @@ GO_BUILD_SERVICES += eventstore/cmd/eventstore
 GO_BUILD_SERVICES += eventstore/cmd/eventstoregw
 GO_BUILD_SERVICES += crudstore/cmd/crudstore
 GO_BUILD_SERVICES += crudstore/cmd/crudstoregw
-GO_BUILD_SERVICES += consumerstore/cmd/consumerstore
-GO_BUILD_SERVICES += consumerstore/cmd/consumerstoregw
-GO_BUILD_SERVICES += users/cmd/users
-GO_BUILD_SERVICES += users/cmd/usersgw
 GO_BUILD_SERVICES += consumers/metrics
 GO_BUILD_TARGETS = $(addprefix ./.bin/, $(GO_BUILD_SERVICES))
 
@@ -298,7 +286,7 @@ test-minikube-wait-svc:
 	done
 
 .PHONY: test-go
-test-go: test-go-unit
+test-go: test-go-unit test-go-integration
 
 .PHONY: test-go-unit
 test-go-unit:
@@ -306,7 +294,7 @@ test-go-unit:
 
 .PHONY: test-go-integration
 test-go-integration:
-	cd tests && ginkgo -r -v --regexScansFilePath=true --focus=$(GINKGO_FOCUS)
+	cd tests && ginkgo -r -v --focus-file=$(GINKGO_FOCUS)
 
 .PHONY: test-py
 test-py: test-py-unit test-py-integration

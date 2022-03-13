@@ -5,7 +5,7 @@ function print_next_version() {
     local root_vol=$2
     local chart_path=$3
 
-    result=$(docker run -v $root_vol:/go/src -w /go/src --rm $image_name helm-release $chart_path --print --silent)
+    result=$(docker run -v $root_vol:/go/src -w /go/src --rm $image_name helm-release $chart_path --print-computed-version)
     local OS=$(echo `uname`|tr '[:upper:]' '[:lower:]')
 
     local sed_opt=

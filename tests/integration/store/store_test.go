@@ -1,21 +1,21 @@
 package store
 
 import (
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
-	store "github.com/makkalot/eskit/generated/grpc/go/eventstore"
-	"github.com/makkalot/eskit/generated/grpc/go/crudstore"
-	"google.golang.org/grpc"
 	"context"
-	"github.com/makkalot/eskit/generated/grpc/go/common"
-	"github.com/satori/go.uuid"
-	"github.com/davecgh/go-spew/spew"
-	"io"
 	"fmt"
-	"time"
-	"strings"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/golang/protobuf/proto"
+	"github.com/makkalot/eskit/generated/grpc/go/common"
+	"github.com/makkalot/eskit/generated/grpc/go/crudstore"
+	store "github.com/makkalot/eskit/generated/grpc/go/eventstore"
 	"github.com/makkalot/eskit/tests/integration/util"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+	"github.com/satori/go.uuid"
+	"google.golang.org/grpc"
+	"io"
+	"strings"
+	"time"
 )
 
 var _ = Describe("Event Store", func() {
@@ -173,18 +173,24 @@ var _ = Describe("Event Store", func() {
 				Expect(proto.Equal(events.Events[0], event)).To(BeTrue(), "getevents : %v, event : %v", events.Events[0], event)
 
 			})
-			It("Should appear in the stream for first event", func(done Done) {
-				select {
-				case res := <-recvChan:
-					GinkgoT().Logf("received first entry from chan : %s", res)
+			It("Should appear in the stream for first event", func(){
+				done := make(chan struct{})
 
-					Expect(proto.Equal(res.Event, event)).To(BeTrue(), "resEvent : %s, event : %s", res.Event, event)
-				case <-time.After(5 * time.Second):
-					Fail("timeout on first event")
-				}
+				go func() {
+					defer GinkgoRecover()
 
-				close(done)
-			}, 5)
+					select {
+					case res := <-recvChan:
+						GinkgoT().Logf("received first entry from chan : %s", res)
+						Expect(proto.Equal(res.Event, event)).To(BeTrue(), "resEvent : %s, event : %s", res.Event, event)
+						close(done)
+					case <-time.After(5 * time.Second):
+						Fail("timeout on first event")
+					}
+				}()
+
+				Eventually(done).Should(BeClosed())
+			})
 		})
 
 		Context("When add the second event", func() {
@@ -218,20 +224,26 @@ var _ = Describe("Event Store", func() {
 				Expect(proto.Equal(events.Events[1], event)).To(BeTrue(), "getevents[1] : %s, event : %s", events.Events[1], event)
 			})
 
-			It("Should appear in the stream for the second event", func(done Done) {
-				select {
-				case res := <-recvChan:
-					GinkgoT().Logf("received second entry from chan : %s", res)
-					Expect(proto.Equal(res.Event, event)).To(BeTrue(), "res.Event : %s, event : %s", res.Event, event)
-				case <-time.After(5 * time.Second):
-					Fail("timeout on second event")
-				}
-
+			It("Should appear in the stream for the second event", func() {
+				done := make(chan struct{})
 				go func() {
-					quit <- struct{}{}
+					defer GinkgoRecover()
+
+					select {
+					case res := <-recvChan:
+						GinkgoT().Logf("received second entry from chan : %s", res)
+						Expect(proto.Equal(res.Event, event)).To(BeTrue(), "res.Event : %s, event : %s", res.Event, event)
+						close(done)
+					case <-time.After(5 * time.Second):
+						Fail("timeout on second event")
+					}
+					go func() {
+						quit <- struct{}{}
+					}()
 				}()
-				close(done)
-			}, 5)
+
+				Eventually(done).Should(BeClosed())
+			})
 		})
 	})
 
