@@ -58,7 +58,6 @@ services:
       - db
       - store
       - crudstore
-      - consumerapi
 
   gotest:
     build:
